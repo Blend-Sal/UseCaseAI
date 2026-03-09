@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+sqlalchemy
+langgraph
+langchain
+nicegui
+requests
+python-dotenv
+openai>=1.0.0
+passlib[bcrypt]

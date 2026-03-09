@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: usecase-ai
+  namespace: "{{ K8S_NAMESPACE }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: usecase-ai
+  template:
+    metadata:
+      labels:
+        app: usecase-ai
+      annotations:
+        ci-pipeline-id: "{{ CI_PIPELINE_ID }}"
+        ci-commit-sha: "{{ CI_COMMIT_SHA }}"
+    spec:
+      imagePullSecrets:
+        - name: gitlab-registry-{{ CI_PROJECT_ID }}
+      containers:
+        - name: usecase-ai
+          image: "{{ CI_REGISTRY_IMAGE }}/app:{{ IMAGE_TAG }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: usecase-config
+            - secretRef:
+                name: usecase-secret
+          env:
+            - name: DATABASE_URL
+              value: "sqlite:////data/data.db"
+          volumeMounts:
+            - name: sqlite-storage
+              mountPath: /data
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: sqlite-storage
+          persistentVolumeClaim:
+            claimName: sqlite-pvc
