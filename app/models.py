@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import Column, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
-from database import Base
+from app.database import Base
 
 
 class UserModel(Base):

@@ -2,12 +2,10 @@ import os
 import re
 from typing import TypedDict
 
-from toolbox_client import generate_text
+from app.toolbox_client import generate_text
 from langgraph.graph import StateGraph, END
 
 SYSTEM_PROMPT = "Du bist ein erfahrener Requirements Engineer."
-
-
 
 class WorkflowState(TypedDict):
     input_text: str

@@ -11,18 +11,18 @@ from typing import Any
 from fastapi import FastAPI, HTTPException, BackgroundTasks, Header
 from nicegui import ui, app as ng_app
 
-from database import SessionLocal, engine
-from models import Base, SessionModel, UserModel
-from schemas import InputRequest, AuthRequest
-from workflow import (
+from app.database import SessionLocal, engine
+from app.models import Base, SessionModel, UserModel
+from app.schemas import InputRequest, AuthRequest
+from app.workflow import (
     analyze_node,
     story_node,
     acceptance_node,
     priority_node,
     generate_open_questions,
-    run_full_workflow,  # optional
+    run_full_workflow,
 )
-from auth import hash_password, verify_password
+from app.auth import hash_password, verify_password
 
 STORAGE_SECRET = os.getenv("NICEGUI_STORAGE_SECRET", "token")
 
